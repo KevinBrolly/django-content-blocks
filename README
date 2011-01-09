@@ -1,0 +1,45 @@
+Content Blocks simply allows users to add content to predefined blocks through the django admin.  A user provides a title, chooses from available template positions and finally adds the content.
+
+The main difference of this app in comparison to some of the other template content block apps available is that this allows users to select the template position from a drop down menu, rather than having to remember/guess an obscure key or title for a position.
+
+That is why this app is useful for building websites/applications for clients as a designer/developer can easily list all available template positions and a client can add/edit/delete content as they see fit.
+
+USAGE
+
+After install and syncdb you should define the CONTENTBLOCKS_POSITION_CHOICES setting as a list of tuples of all the positions that should be made available to users.  This is done in a similar way to the Django models choices attribute.
+
+CONTENTBLOCKS_POSITION_CHOICES = [
+    ('left_column_top', u'Left Column Top'),
+    ('left_column_bottom', u'Left Column Bottom'),
+    ('homepage_right_block', u'Homepage Right Block'),
+    ]
+
+The position ('None', u'None') will be added for you if you do not enter it yourself, which will allow users to specify blocks that should not be shown.
+
+After you have defined positions you should go through your templates and use the template tag as follows:
+
+{% load content_block_tags %}
+<html>
+  <head>
+    <title>Example</title>
+  </head>
+  <body>
+    <div id="left_column">
+      <div id="top">
+        {% get_block "left_column_top" %}
+        {% if block.left_column_top %}
+          {{ block.left_column_top.content }}
+        {% endif %}
+      </div>
+      <div id="bottom">
+        {% get_block "left_column_bottom" %}
+        {% if block.left_column_bottom %}
+          <h1>{{ block.left_column_bottom.title }}</h1>
+          {{ block.left_column_bottom.content }}
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>
+
+The attributes available to each block are title and content, and can be accessed as seen in the above example.
